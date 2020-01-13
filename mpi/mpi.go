@@ -203,67 +203,67 @@ func (o *Communicator) AllReduceMaxI(dest, orig []int) {
 }
 
 // Send sends values to processor toID
-func (o *Communicator) Send(vals []float64, toID int) {
+func (o *Communicator) Send(vals []float64, toID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Send(buf, C.int(len(vals)), C.TyDouble, C.int(toID), 10000, o.comm)
+	C.MPI_Send(buf, C.int(len(vals)), C.TyDouble, C.int(toID), C.int(tag), o.comm)
 }
 
 // Recv receives values from processor fromId
-func (o *Communicator) Recv(vals []float64, fromID int) {
+func (o *Communicator) Recv(vals []float64, fromID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Recv(buf, C.int(len(vals)), C.TyDouble, C.int(fromID), 10000, o.comm, C.StIgnore)
+	C.MPI_Recv(buf, C.int(len(vals)), C.TyDouble, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 }
 
 // SendC sends values to processor toID (complex version)
-func (o *Communicator) SendC(vals []complex128, toID int) {
+func (o *Communicator) SendC(vals []complex128, toID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Send(buf, C.int(len(vals)), C.TyComplex, C.int(toID), 10001, o.comm)
+	C.MPI_Send(buf, C.int(len(vals)), C.TyComplex, C.int(toID), C.int(tag), o.comm)
 }
 
 // RecvC receives values from processor fromId (complex version)
-func (o *Communicator) RecvC(vals []complex128, fromID int) {
+func (o *Communicator) RecvC(vals []complex128, fromID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Recv(buf, C.int(len(vals)), C.TyComplex, C.int(fromID), 10001, o.comm, C.StIgnore)
+	C.MPI_Recv(buf, C.int(len(vals)), C.TyComplex, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 }
 
 // SendI sends values to processor toID (integer version)
-func (o *Communicator) SendI(vals []int, toID int) {
+func (o *Communicator) SendI(vals []int, toID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Send(buf, C.int(len(vals)), C.TyLong, C.int(toID), 10002, o.comm)
+	C.MPI_Send(buf, C.int(len(vals)), C.TyLong, C.int(toID), C.int(tag), o.comm)
 }
 
 // RecvI receives values from processor fromId (integer version)
-func (o *Communicator) RecvI(vals []int, fromID int) {
+func (o *Communicator) RecvI(vals []int, fromID int, tag int) {
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Recv(buf, C.int(len(vals)), C.TyLong, C.int(fromID), 10002, o.comm, C.StIgnore)
+	C.MPI_Recv(buf, C.int(len(vals)), C.TyLong, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 }
 
 // SendOne sends one value to processor toID
-func (o *Communicator) SendOne(val float64, toID int) {
+func (o *Communicator) SendOne(val float64, toID int, tag int) {
 	vals := []float64{val}
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Send(buf, 1, C.TyDouble, C.int(toID), 10003, o.comm)
+	C.MPI_Send(buf, 1, C.TyDouble, C.int(toID), C.int(tag), o.comm)
 }
 
 // RecvOne receives one value from processor fromId
-func (o *Communicator) RecvOne(fromID int) (val float64) {
+func (o *Communicator) RecvOne(fromID int, tag int) (val float64) {
 	vals := []float64{0}
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Recv(buf, 1, C.TyDouble, C.int(fromID), 10003, o.comm, C.StIgnore)
+	C.MPI_Recv(buf, 1, C.TyDouble, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 	return vals[0]
 }
 
 // SendOneI sends one value to processor toID (integer version)
-func (o *Communicator) SendOneI(val int, toID int) {
+func (o *Communicator) SendOneI(val int, toID int, tag int) {
 	vals := []int{val}
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Send(buf, 1, C.TyLong, C.int(toID), 10004, o.comm)
+	C.MPI_Send(buf, 1, C.TyLong, C.int(toID), C.int(tag), o.comm)
 }
 
 // RecvOneI receives one value from processor fromId (integer version)
-func (o *Communicator) RecvOneI(fromID int) (val int) {
+func (o *Communicator) RecvOneI(fromID int, tag int) (val int) {
 	vals := []int{0}
 	buf := unsafe.Pointer(&vals[0])
-	C.MPI_Recv(buf, 1, C.TyLong, C.int(fromID), 10004, o.comm, C.StIgnore)
+	C.MPI_Recv(buf, 1, C.TyLong, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 	return vals[0]
 }
