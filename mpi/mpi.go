@@ -73,6 +73,26 @@ func WorldSize() (size int) {
 	return int(s)
 }
 
+// Request holds a handle for a MPI request
+type Request struct {
+	request C.MPI_Request
+	status  C.MPI_Status
+}
+
+// Test checks if request is complete
+func (r *Request) Test() bool {
+	var flag C.int
+	C.MPI_Test(&r.request, &flag, &r.status)
+	return flag == 1
+}
+
+// Cancel cancels the request
+func (r *Request) Cancel() {
+	if !r.Test() {
+		C.MPI_Cancel(&r.request)
+	}
+}
+
 // Communicator holds the World communicator or a subset communicator
 type Communicator struct {
 	comm  C.MPI_Comm
@@ -266,4 +286,20 @@ func (o *Communicator) RecvOneI(fromID int, tag int) (val int) {
 	buf := unsafe.Pointer(&vals[0])
 	C.MPI_Recv(buf, 1, C.TyLong, C.int(fromID), C.int(tag), o.comm, C.StIgnore)
 	return vals[0]
+}
+
+// SendINoBlock receives values from processor fromId (non-blocking integer version)
+func (o *Communicator) SendINoBlock(vals []int, toID int, tag int) (req *Request) {
+	buf := unsafe.Pointer(&vals[0])
+	req = &Request{}
+	C.MPI_Isend(buf, C.int(len(vals)), C.TyLong, C.int(toID), C.int(tag), o.comm, &req.request)
+	return req
+}
+
+// RecvINoBlock receives values from processor fromId (non-blocking integer version)
+func (o *Communicator) RecvINoBlock(vals []int, fromID int, tag int) (req *Request) {
+	buf := unsafe.Pointer(&vals[0])
+	req = &Request{}
+	C.MPI_Irecv(buf, C.int(len(vals)), C.TyLong, C.int(fromID), C.int(tag), o.comm, &req.request)
+	return req
 }
